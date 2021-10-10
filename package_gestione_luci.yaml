@@ -875,11 +875,11 @@ automation:
               - service: input_boolean.turn_on
                 entity_id: input_boolean.gestione_luci_periodo_giorno
               - service: input_boolean.turn_off
-                entity_id: 
+                entity_id:
                   - input_boolean.gestione_luci_periodo_crepuscolo
                   - input_boolean.gestione_luci_periodo_sera
                   - input_boolean.gestione_luci_periodo_notte
-          
+
           - alias: "se crepuscolo"
             conditions:
               - condition: template
@@ -888,11 +888,11 @@ automation:
               - service: input_boolean.turn_on
                 entity_id: input_boolean.gestione_luci_periodo_crepuscolo
               - service: input_boolean.turn_off
-                entity_id: 
+                entity_id:
                   - input_boolean.gestione_luci_periodo_giorno
                   - input_boolean.gestione_luci_periodo_sera
                   - input_boolean.gestione_luci_periodo_notte
-          
+
           - alias: "se sera"
             conditions:
               - condition: template
@@ -901,7 +901,7 @@ automation:
               - service: input_boolean.turn_on
                 entity_id: input_boolean.gestione_luci_periodo_sera
               - service: input_boolean.turn_off
-                entity_id: 
+                entity_id:
                   - input_boolean.gestione_luci_periodo_giorno
                   - input_boolean.gestione_luci_periodo_crepuscolo
                   - input_boolean.gestione_luci_periodo_notte
@@ -914,7 +914,7 @@ automation:
               - service: input_boolean.turn_on
                 entity_id: input_boolean.gestione_luci_periodo_notte
               - service: input_boolean.turn_off
-                entity_id: 
+                entity_id:
                   - input_boolean.gestione_luci_periodo_giorno
                   - input_boolean.gestione_luci_periodo_crepuscolo
                   - input_boolean.gestione_luci_periodo_sera
@@ -1028,10 +1028,10 @@ automation:
 
           {% elif is_state("sensor.gestione_luci_fascia_oraria_sync", "Sera") %}
             {{ states("input_select.gestione_luci_scena_serale_sync") }}
-          
+
           {% elif is_state("sensor.gestione_luci_fascia_oraria_sync", "Notte") %}
             {{ states("input_select.gestione_luci_scena_notturna_sync") }}
-          
+
           {% else %}
             {{ states("input_select.gestione_luci_scena_diurna_sync") }}
           {% endif %}
@@ -1044,13 +1044,16 @@ automation:
     - service: script.gestione_luci_studio_transazione_lunga
     - service: script.gestione_luci_cameretta_transazione_lunga
 
-  - alias: 'gestione_luci_sync_lampadario_soggiorno'
+  - alias: 'gestione_luci_sync_transazione_corta'
     id: 01FGA8G1K5T62HYW8DVND37RT3
     mode: single
     max_exceeded: silent
     trigger:
     - platform: state
       entity_id: light.soggiorno_luce_piccola
+      to: 'on'
+    - platform: state
+      entity_id: light.soggiorno_luce_grande
       to: 'on'
     - platform: state
       entity_id: light.abat_jour
@@ -1064,11 +1067,15 @@ automation:
     action:
     - service_template: >
         {% if trigger.entity_id == 'light.soggiorno_luce_piccola' %} script.gestione_luci_sync_lampadario_soggiorno
+        {% elif trigger.entity_id == 'light.soggiorno_luce_grande' %} script.gestione_luci_sync_lampadario_soggiorno
         {% elif trigger.entity_id == 'light.abat_jour' %} script.gestione_luci_sync_abat_jour
         {% elif trigger.entity_id == 'light.luce_bagno' %} script.gestione_luci_sync_bagno
         {% elif trigger.entity_id == 'light.luce_ingresso' %} script.gestione_luci_ingresso
         {% endif %}
-          
+
+
+      # {% set trigger_name = trigger.to_state.entity_id %}
+      # 🚨 Triggered by {{ trigger_name.replace('_','\_') }} {{ trigger.to_state.name }} too high for {{ trigger.entity_id }} !
 
   - alias: 'gestione_luci_sreset sync'
     id: 793d8c553d316b6d854449c9f4caf01c
@@ -1089,8 +1096,8 @@ automation:
     id: 4e7aa161f5bbe043f31cf88262330090
     initial_state: true
     trigger:
-      - platform: template
-        value_template: "{{ states('sensor.time') == (states.input_datetime.lampada_go_attivazione_scena_notte.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+      - platform: time
+        at: input_datetime.lampada_go_attivazione_scena_notte
     condition:
       - condition: state
         entity_id: input_boolean.lampada_go_scena_automatica_notte
@@ -1106,8 +1113,8 @@ automation:
     id: 4a84e7c4c1f750bad3dd6923cdaf6009
     initial_state: true
     trigger:
-      - platform: template
-        value_template: "{{ states('sensor.time') == (states.input_datetime.lampada_go_spegnimento_automatico_notte.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+      - platform: time
+        at: input_datetime.lampada_go_spegnimento_automatico_notte
     condition:
       - condition: state
         entity_id: input_boolean.lampada_go_spegnimento_automatico_notte
@@ -1116,6 +1123,280 @@ automation:
       - service: light.turn_off
         target:
           entity_id: light.hue_go
+
+
+#################################### ACCENDI LUCE RIENTRO SERALE E' NEL PACKAGES PORTA INGRESSO
+
+
+################### tasti
+# 6 tasti
+  # - alias: 6 tasti Luce Ingresso
+  #   id: 32de1d219e73d149073c8e2ca8d5d752
+  #   trigger:
+  #     - platform: event
+  #       event_type: zha_event
+  #       event_data:
+  #         device_ieee: !secret 6_tasti
+  #         command: '1_single'
+  #         args:
+  #           button: 1
+  #           press_type: single
+  #   action:
+  #     - entity_id: light.luce_ingresso
+  #       service: light.toggle
+  #
+  # - alias: 6 tasti Luce Soggiorno piccola
+  #   id: bdd7fecef6d89dc718326a53e8de96e8
+  #   trigger:
+  #     - platform: event
+  #       event_type: zha_event
+  #       event_data:
+  #         device_ieee: !secret 6_tasti
+  #         command: '5_single'
+  #         args:
+  #           button: 5
+  #           press_type: single
+  #   action:
+  #     - entity_id: light.soggiorno_luce_piccola
+  #       service: light.toggle
+  #
+  # - alias: 6 tasti Luce Soggiorno grande
+  #   id: 222b0ccd7d149df55c9150c7700eef51
+  #   trigger:
+  #     - platform: event
+  #       event_type: zha_event
+  #       event_data:
+  #         device_ieee: !secret 6_tasti
+  #         command: '5_double'
+  #         args:
+  #           button: 5
+  #           press_type: double
+  #   action:
+  #     - entity_id: light.soggiorno_luce_grande
+  #       service: light.toggle
+  #
+  # - alias: 6 tasti abat_jourt
+  #   id: 8197ef141a8a91d7d6859d156df14d2e
+  #   trigger:
+  #     - platform: event
+  #       event_type: zha_event
+  #       event_data:
+  #         device_ieee: !secret 6_tasti
+  #         command: '3_single'
+  #         args:
+  #           button: 3
+  #           press_type: single
+  #   action:
+  #     - entity_id: light.abat_jour
+  #       service: light.toggle
+
+  # Telecomando on/off e dimming
+  - alias: 6 tasti luci con dimmer
+    id: eb0225d0b3311517601117d5bf78217d
+    mode: restart
+    trigger:
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: !secret 6_tasti
+    action:
+      - variables:
+          command: "{{ trigger.event.data.command }}"
+          args: "{{ trigger.event.data.args }}"
+          light_1: light.luce_ingresso
+          light_2: light.soggiorno_luce_piccola
+          light_3: light.soggiorno_luce_grande
+          light_4: light.abat_jour
+          light_5: light.lampadario_soggiorno
+          light_6: light.hue_abat_jour
+          light_7: light.ingresso
+
+      - alias: "Selezione tipo di evento"
+        choose:
+        - conditions: "{{ command == '1_single' }}"
+          sequence:
+            - alias: "On/Off luce ingresso"
+              service: light.toggle
+              target:
+                entity_id: "{{ light_1 }}"
+
+        - conditions: "{{ command == '5_single' }}"
+          sequence:
+            - alias: "On/Off Luce Piccola"
+              service: light.toggle
+              target:
+                entity_id: "{{ light_2 }}"
+
+        - conditions: "{{ command == '5_double' }}"
+          sequence:
+            - alias: "On/Off Luce Grande"
+              service: light.toggle
+              target:
+                entity_id: "{{ light_3 }}"
+
+        - conditions: "{{ command == '3_single' }}"
+          sequence:
+            - alias: "On/Off Abat Jour"
+              service: light.toggle
+              target:
+                entity_id: "{{ light_4 }}"
+
+        # Dimmer + Lampadario
+        - conditions: "{{ command == '5_hold' }}"
+          sequence:
+            repeat:
+              while: "{{ repeat.index <= 10 }}"
+              sequence:
+              - service: light.turn_on
+                data:
+                  entity_id: "{{ light_5 }}"
+                  brightness_step_pct: 10
+              - delay:
+                  milliseconds: 500
+        # Dimmer - Lampadario
+        - conditions: "{{ command == '6_hold' }}"
+          sequence:
+            repeat:
+              while: "{{ repeat.index <= 10 }}"
+              sequence:
+              - service: light.turn_on
+                data:
+                  entity_id: "{{ light_5 }}"
+                  brightness_step_pct: -10
+              - delay:
+                  milliseconds: 500
+
+        # Dimmer + abat_jour
+        - conditions: "{{ command == '3_hold' }}"
+          sequence:
+            repeat:
+              while: "{{ repeat.index <= 10 }}"
+              sequence:
+              - service: light.turn_on
+                data:
+                  entity_id: "{{ light_6 }}"
+                  brightness_step_pct: 10
+              - delay:
+                  milliseconds: 500
+        # Dimmer - abat_jour
+        - conditions: "{{ command == '4_hold' }}"
+          sequence:
+            repeat:
+              while: "{{ repeat.index <= 10 }}"
+              sequence:
+              - service: light.turn_on
+                data:
+                  entity_id: "{{ light_6 }}"
+                  brightness_step_pct: -10
+              - delay:
+                  milliseconds: 500
+
+        # Dimmer + ingresso
+        - conditions: "{{ command == '1_hold' }}"
+          sequence:
+            repeat:
+              while: "{{ repeat.index <= 10 }}"
+              sequence:
+              - service: light.turn_on
+                data:
+                  entity_id: "{{ light_7 }}"
+                  brightness_step_pct: 10
+              - delay:
+                  milliseconds: 500
+        # Dimmer - ingresso
+        - conditions: "{{ command == '2_hold' }}"
+          sequence:
+            repeat:
+              while: "{{ repeat.index <= 10 }}"
+              sequence:
+              - service: light.turn_on
+                data:
+                  entity_id: "{{ light_7 }}"
+                  brightness_step_pct: -10
+              - delay:
+                  milliseconds: 500
+
+
+# Led 1
+  - alias: Led 1 Cucina
+    id: eb2ef1e793ba96b8808a4d5473593f1c
+    mode: single
+    trigger:
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: !secret tasto_led_1
+          command: 'on'
+    action:
+      - entity_id: light.led_1_cucina
+        service: light.toggle
+      - delay: "00:00:01"
+
+  - alias: Led 2 Cucina
+    id: 889ad7c683c10c6d0d4e6c6e019efb13
+    mode: single
+    trigger:
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: !secret tasto_led_2
+          command: 'on'
+    action:
+      - entity_id: light.led_2_cucina
+        service: light.toggle
+      - delay: "00:00:01"
+
+  - alias: Led Cucina all On/off
+    id: c94c142529dc74837a23cfeecdf4aadb
+    trigger:
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: !secret tasto_led_1
+          command: 'move_with_on_off'
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: !secret tasto_led_2
+          command: 'move_with_on_off'
+    action:
+        - service_template: >
+            {% if is_state('light.led_1_cucina', 'on') and  is_state('light.led_2_cucina', 'on') %}
+              script.led_cucina_off
+            {% else %}
+              script.led_cucina_on
+            {% endif %}
+
+
+########################################
+
+  # Telecomando on/off e dimming
+  - alias: 'Dimmer Luce Bagno'
+    id: fde473c4775cdbd2204fa20169eee356
+    mode: restart
+    trigger:
+      - platform: event
+        event_type: zha_event
+        event_data:
+          device_ieee: "00:15:8d:00:02:3d:37:94"
+    action:
+      - variables:
+          command: "{{ trigger.event.data.command }}"
+          args: "{{ trigger.event.data.args }}"
+          light_dest: light.hue_bagno
+      - alias: "Selezione tipo di evento"
+        choose:
+        # Holt tasto ON (aumenta luminosità)
+        - conditions: "{{ command == 'hold' }}"
+          sequence:
+            repeat:
+              while: "{{ repeat.index <= 10 }}"
+              sequence:
+              - service: light.turn_on
+                data:
+                  entity_id: "{{ light_dest }}"
+                  brightness_step_pct: 10
+              - delay: 1
 
 
 #################################### ACCENDI LUCE RIENTRO SERALE E' NEL PACKAGES PORTA INGRESSO
