@@ -18,6 +18,7 @@ homeassistant:
 # Aggiunto gestione luce notturna corridoio
 # Aggiunto auto spegnimento luce corridoio
 # Aggiunto personalizzazione da UI durata transazione automatica luci
+# Aggiunto doppo controllo per il passaggio delle fasce orarie
 # Aggiunto personalizzazione da UI durta transazione corta quando si accene la luce
 # Aggiunto personalizzazione da UI durata transazione quando si chiede di alzare o abbassare luci
 # Aggiunto Spegnimento automatico tutte le luci di casa la notte
