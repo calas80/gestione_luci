@@ -1,4 +1,30 @@
-################################################################################
+
+homeassistant:
+  customize:
+    package.node_anchors:
+      customize: &customize
+        package: 'Package Gestione Luci'
+        version: 'v3.1 - 24/05/2022'
+        author: 'Calas'
+
+# Aggiunto sincronizzazione luci
+# Aggiunto conteggio luci
+# Aggiunto Abbassa / Alaza luci su ogni singola stanza
+# Aggiunto Selettore automatico stanza sa Alexa
+# Aggiunto Gestione transazioni per signolo punto luce
+# Aggiunto popup con
+# Aggiunto gestione luce notturna corridoio
+# Aggiunto auto spegnimento luce corridoio
+# Aggiunto personalizzazione da UI durata transazione automatica luci
+# Aggiunto personalizzazione da UI durta transazione corta quando si accene la luce
+# Aggiunto personalizzazione da UI durata transazione quando si chiede di alzare o abbassare luci
+# Aggiunto Spegnimento automatico tutte le luci di casa la notte
+# Aggiunto Spengimento automatico luci con l'inserimento allarme away
+# In corso:_ Gestione sincronizzazione luci accese nella stessa stanza dopo la richiesta di alzare o abbassare luci
+# Da fare: Riconoscimento ospiti per gestione scene serali
+
+
+##############################################################################
 ##                  Input Boolean
 ###################################################
 input_boolean:
@@ -10,48 +36,74 @@ input_boolean:
     name: 'Tutte le luci'
     icon: mdi:lightbulb-group
 
+################################################### LUCI
   gestione_luci_lampadario_soggiorno:
     name: 'Lampadario soggiorno'
     icon: mdi:ceiling-light
-
   gestione_luci_lampada_soggiorno:
     name: 'Lampada soggiorno'
     icon: mdi:floor-lamp
-
   gestione_luci_cucina:
     name: 'Luce cucina'
     icon: mdi:globe-light
-
   gestione_luci_led_cucina:
     name: 'Led cucina'
     icon: mdi:led-strip-variant
-
   gestione_luci_abat_jour:
     name: 'abat_jour'
     icon: mdi:lamp
-
   gestione_luci_ingresso:
     name: 'Luce Ingresso'
     icon: mdi:dome-light
-
   gestione_luci_corridoio:
     name: 'Luce Corridoio'
     icon: mdi:dome-light
-
   gestione_luci_bagno:
     name: 'Luce bagno'
     icon: mdi:lightbulb
-
   gestione_luci_studio:
     name: 'Luce studio'
     icon: mdi:lightbulb
-
   gestione_luci_cameretta:
     name: 'Luce Cameretta'
     icon: mdi:lightbulb
-
   gestione_luci_camera_da_letto:
     name: 'Camera da letto'
+    icon: mdi:globe-light
+
+############################################### LUCI per alza/Abbassa
+  gestione_luci_lampadario_soggiorno_int_sync:
+    name: 'Lampadario soggiorno int sync'
+    icon: mdi:ceiling-light
+  gestione_luci_lampada_soggiorno_int_sync:
+    name: 'Lampada soggiorno int sync'
+    icon: mdi:floor-lamp
+  gestione_luci_cucina_int_sync:
+    name: 'Luce cucina int sync'
+    icon: mdi:globe-light
+  gestione_luci_led_cucina_int_sync:
+    name: 'Led cucina int sync'
+    icon: mdi:led-strip-variant
+  gestione_luci_abat_jour_int_sync:
+    name: 'abat_jour int sync'
+    icon: mdi:lamp
+  gestione_luci_ingresso_int_sync:
+    name: 'Luce Ingresso int sync'
+    icon: mdi:dome-light
+  gestione_luci_corridoio_int_sync:
+    name: 'Luce Corridoio int sync'
+    icon: mdi:dome-light
+  gestione_luci_bagno_int_sync:
+    name: 'Luce bagno int sync'
+    icon: mdi:lightbulb
+  gestione_luci_studio_int_sync:
+    name: 'Luce studio int sync'
+    icon: mdi:lightbulb
+  gestione_luci_cameretta_int_sync:
+    name: 'Luce Cameretta int sync'
+    icon: mdi:lightbulb
+  gestione_luci_camera_da_letto_int_sync:
+    name: 'Camera da letto int sync'
     icon: mdi:globe-light
 
   gestione_luci_sync_manuale:
@@ -60,7 +112,6 @@ input_boolean:
   lampada_go_spegnimento_automatico_notte:
     name: 'Spegnimento automatico notte Lampada Go'
     icon: mdi:lightbulb-off
-
   lampada_go_scena_automatica_notte:
     name: 'Scena automatica notte Lampada Go'
     icon: mdi:theme-light-dark
@@ -96,39 +147,30 @@ input_boolean:
   gestione_luci_tutti_a_letto_lampadario_soggiorno:
     name: 'Lampadario soggiorno'
     icon: mdi:ceiling-light
-
   gestione_luci_tutti_a_letto_lampada_soggiorno:
     name: 'Lampada soggiorno'
     icon: mdi:floor-lamp
-
   gestione_luci_tutti_a_letto_cucina:
     name: 'Luce cucina'
     icon: mdi:globe-light
-
   gestione_luci_tutti_a_letto_abat_jour:
     name: 'abat_jour'
     icon: mdi:lamp
-
   gestione_luci_tutti_a_letto_ingresso:
     name: 'Luce Ingresso'
     icon: mdi:dome-light
-
   gestione_luci_tutti_a_letto_corridoio:
     name: 'Luce Corridoio'
     icon: mdi:dome-light
-
   gestione_luci_tutti_a_letto_bagno:
     name: 'Luce bagno'
     icon: mdi:lightbulb
-
   gestione_luci_tutti_a_letto_studio:
     name: 'Luce studio'
     icon: mdi:lightbulb
-
   gestione_luci_tutti_a_letto_cameretta:
     name: 'Luce Cameretta'
     icon: mdi:lightbulb
-
   gestione_luci_tutti_a_letto_camera_da_letto:
     name: 'Camera da letto'
     icon: mdi:globe-light
@@ -247,24 +289,43 @@ input_datetime:
     name: 'Inizio Mattino'
     icon: mdi:weather-sunny
     has_time: true
+  gestione_luci_giorno_offset:
+    name: 'Inizio Mattino offset'
+    icon: mdi:weather-sunny
+    has_time: true
+
   gestione_luci_crepuscolo:
     name: 'Inizio Crepuscolo'
     icon: mdi:weather-sunset
     has_time: true
+  gestione_luci_crepuscolo_offset:
+    name: 'Inizio Crepuscolo offset'
+    icon: mdi:weather-sunset
+    has_time: true
+
   gestione_luci_sera:
     name: 'Inizio Sera'
     icon: mdi:weather-sunset
     has_time: true
+  gestione_luci_sera_offset:
+    name: 'Inizio Sera offset'
+    icon: mdi:weather-sunset
+    has_time: true
+
   gestione_luci_notte:
     name: 'Inizio Notte'
     icon: mdi:weather-night
     has_time: true
+  gestione_luci_notte_offset:
+    name: 'Inizio Notte offset'
+    icon: mdi:weather-night
+    has_time: true
+
 
   lampada_go_attivazione_scena_notte:
     name: 'Lampada Go modalità notte'
     icon: mdi:weather-night
     has_time: true
-
   lampada_go_spegnimento_automatico_notte:
     name: 'Lampada Go modalità notte'
     icon: mdi:weather-night
@@ -274,6 +335,13 @@ input_datetime:
     name: 'Spegni tutte le luci di automatico notte'
     icon: mdi:theme-light-dark
     has_time: true
+
+################################################################################
+##                  Input Text
+###################################################
+input_text:
+  gestione_luci_sync_alza_abbassa:
+    name: Gestione luci sync alza abbassa
 
 ################################################################################
 ##                  Sensor
@@ -416,6 +484,20 @@ script:
     alias: 'Sync Modello Attuale'
     icon: mdi:palette
     sequence:
+      - service: input_boolean.turn_on
+        entity_id:
+          - input_boolean.gestione_luci_lampadario_soggiorno_int_sync
+          - input_boolean.gestione_luci_lampada_soggiorno_int_sync
+          - input_boolean.gestione_luci_cucina_int_sync
+          - input_boolean.gestione_luci_led_cucina_int_sync
+          - input_boolean.gestione_luci_bagno_int_sync
+          - input_boolean.gestione_luci_abat_jour_int_sync
+          - input_boolean.gestione_luci_ingresso_int_sync
+          - input_boolean.gestione_luci_corridoio_int_sync
+          - input_boolean.gestione_luci_studio_int_sync
+          - input_boolean.gestione_luci_cameretta_int_sync
+          - input_boolean.gestione_luci_camera_da_letto_int_sync
+
       - service: script.turn_on
         entity_id:
           - script.gestione_luci_sync_lampadario_soggiorno
@@ -636,11 +718,20 @@ script:
       - condition: state
         entity_id: input_boolean.gestione_luci_lampadario_soggiorno
         state: 'on'
-      - service: scene.turn_on
-        data:
-          transition: "{{states('input_number.gestione_luci_transazione_corta') |int }}"
-        target:
-          entity_id: "scene.lampadario_soggiorno_{{ states('input_select.gestione_luci_scena_corrente')}}"
+
+      - if: "{{ states('input_boolean.gestione_luci_lampadario_soggiorno_int_sync') == 'off' }}"
+        then:
+          - service: scene.turn_on
+            data:
+              transition: "{{states('input_number.gestione_luci_transazione_corta') |int }}"
+            target:
+              entity_id: "scene.lampadario_soggiorno_{{ states('input_text.gestione_luci_sync_alza_abbassa')}}"
+        else:
+          - service: scene.turn_on
+            data:
+              transition: "{{states('input_number.gestione_luci_transazione_corta') |int }}"
+            target:
+              entity_id: "scene.lampadario_soggiorno_{{ states('input_text.gestione_luci_sync_alza_abbassa')}}"
 
   gestione_luci_sync_lampada_soggiorno:
     alias: 'Sincronizzazione Modello Attuale'
@@ -942,20 +1033,76 @@ script:
     icon: mdi:palette
     sequence:
       - service: alexa_media.update_last_called
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.gestione_luci_sync_manuale
       - service: scene.turn_on
         data:
           transition: "{{states('input_number.gestione_luci_transazione_alza_abbassa_luci') |int }}"
         target:
           entity_id: "scene.{{states('sensor.gestione_luci_selettore_stanza')}}_galassia"
-      - condition: template
-        value_template: "{{ is_state('light.hue_led_cucina', 'on') }}"
-      - service: scene.turn_on
-        data:
-          transition: "{{states('input_number.gestione_luci_transazione_alza_abbassa_luci') |int }}"
+
+      - service: input_text.set_value
         target:
-          entity_id: scene.hue_room_led_cucina_galassia
+          entity_id: input_text.gestione_luci_sync_alza_abbassa
+        data:
+          value: "galassia"
+
+      - choose:
+          - conditions: "{{ is_state('light.hue_led_cucina', 'on') and states('sensor.gestione_luci_selettore_stanza') == 'cucina' }}"
+            sequence:
+              - service: scene.turn_on
+                data:
+                  transition: "{{states('input_number.gestione_luci_transazione_alza_abbassa_luci') |int }}"
+                target:
+                  entity_id: scene.hue_room_led_cucina_galassia
+
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'soggiorno'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id:
+                  - input_boolean.gestione_luci_lampadario_soggiorno_int_sync
+                  - input_boolean.gestione_luci_lampada_soggiorno_int_sync
+                  - input_boolean.gestione_luci_abat_jour_int_sync
+                  - input_boolean.gestione_luci_ingresso_int_sync
+                  - input_boolean.gestione_luci_corridoio_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'cucina'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id:
+                  - input_boolean.gestione_luci_cucina_int_sync
+                  - input_boolean.gestione_luci_led_cucina_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'bagno'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.gestione_luci_bagno_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'studio'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.gestione_luci_studio_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'cameretta'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.gestione_luci_cameretta_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'camera_da_letto'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.gestione_luci_camera_da_letto_int_sync
 
   gestione_luci_abbassa_luci_soggiorno:
     alias: 'Abbassa luci soggiorno'
@@ -1078,20 +1225,78 @@ script:
     alias: 'Alza Luci'
     icon: mdi:palette
     sequence:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.gestione_luci_sync_manuale
+      - service: alexa_media.update_last_called
+
       - service: scene.turn_on
         data:
           transition: "{{states('input_number.gestione_luci_transazione_alza_abbassa_luci') |int }}"
         target:
           entity_id: "scene.{{states('sensor.gestione_luci_selettore_stanza')}}_lettura"
-      - condition: template
-        value_template: "{{ is_state('light.hue_led_cucina', 'on') }}"
-      - service: scene.turn_on
-        data:
-          transition: "{{states('input_number.gestione_luci_transazione_alza_abbassa_luci') |int }}"
+
+      - service: input_text.set_value
         target:
-          entity_id: scene.hue_room_led_cucina_lettura
+          entity_id: input_text.gestione_luci_sync_alza_abbassa
+        data:
+          value: "lettura"
+
+      - choose:
+          - conditions: "{{ is_state('light.hue_led_cucina', 'on') and states('sensor.gestione_luci_selettore_stanza') == 'cucina' }}"
+            sequence:
+              - service: scene.turn_on
+                data:
+                  transition: "{{states('input_number.gestione_luci_transazione_alza_abbassa_luci') |int }}"
+                target:
+                  entity_id: scene.hue_room_led_cucina_lettura
+
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'soggiorno'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id:
+                  - input_boolean.gestione_luci_lampadario_soggiorno_int_sync
+                  - input_boolean.gestione_luci_lampada_soggiorno_int_sync
+                  - input_boolean.gestione_luci_abat_jour_int_sync
+                  - input_boolean.gestione_luci_ingresso_int_sync
+                  - input_boolean.gestione_luci_corridoio_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'cucina'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id:
+                  - input_boolean.gestione_luci_cucina_int_sync
+                  - input_boolean.gestione_luci_led_cucina_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'bagno'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.gestione_luci_bagno_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'studio'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.gestione_luci_studio_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'cameretta'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.gestione_luci_cameretta_int_sync
+
+          - conditions:
+              - condition: template
+                value_template: "{{states('sensor.gestione_luci_selettore_stanza') == 'camera_da_letto'}}"
+            sequence:
+              - service: input_boolean.turn_off
+                entity_id: input_boolean.gestione_luci_camera_da_letto_int_sync
 
   gestione_luci_alza_luci_soggiorno:
     alias: 'Alza luci soggiorno'
@@ -1104,6 +1309,13 @@ script:
           transition: "{{states('input_number.gestione_luci_transazione_alza_abbassa_luci') |int }}"
         target:
           entity_id: scene.soggiorno_lettura
+      - service: input_boolean.turn_off
+        entity_id:
+          - input_boolean.gestione_luci_lampadario_soggiorno
+          - input_boolean.gestione_luci_lampada_soggiorno
+          - input_boolean.gestione_luci_abat_jour
+          - input_boolean.gestione_luci_ingresso
+          - input_boolean.gestione_luci_corridoio
 
   gestione_luci_alza_luci_cucina:
     alias: 'Alza luci cucina'
@@ -1240,6 +1452,56 @@ template:
 ##                  Automation
 ###################################################
 automation:
+  - alias: 'gestione_luci_set_offset_fascia_oraria'
+    id: 452240bc8f1cef6c87dc5bb7ee7ae2b0
+    initial_state: true
+    mode: single
+    max_exceeded: silent
+    trigger:
+      - platform: state
+        entity_id: input_datetime.gestione_luci_giorno
+      - platform: state
+        entity_id: input_datetime.gestione_luci_crepuscolo
+      - platform: state
+        entity_id: input_datetime.gestione_luci_sera
+      - platform: state
+        entity_id: input_datetime.gestione_luci_notte
+    action:
+      - variables:
+          variabile: "{{ trigger.entity_id }}"
+      - alias: "selettore"
+        choose:
+        - conditions: "{{ variabile == 'input_datetime.gestione_luci_giorno' }}"
+          sequence:
+            - service: input_datetime.set_datetime
+              target:
+                entity_id: input_datetime.gestione_luci_giorno_offset
+              data:
+                time: "{{(state_attr('input_datetime.gestione_luci_giorno', 'timestamp') + 600) | timestamp_custom('%H:%M', false)}}"
+
+        - conditions: "{{ variabile == 'input_datetime.gestione_luci_crepuscolo' }}"
+          sequence:
+            - service: input_datetime.set_datetime
+              target:
+                entity_id: input_datetime.gestione_luci_crepuscolo_offset
+              data:
+                time: "{{(state_attr('input_datetime.gestione_luci_crepuscolo', 'timestamp') + 600) | timestamp_custom('%H:%M', false)}}"
+
+        - conditions: "{{ variabile == 'input_datetime.gestione_luci_sera' }}"
+          sequence:
+            - service: input_datetime.set_datetime
+              target:
+                entity_id: input_datetime.gestione_luci_sera_offset
+              data:
+                time: "{{(state_attr('input_datetime.gestione_luci_sera', 'timestamp') + 600) | timestamp_custom('%H:%M', false)}}"
+
+        - conditions: "{{ variabile == 'input_datetime.gestione_luci_notte' }}"
+          sequence:
+            - service: input_datetime.set_datetime
+              target:
+                entity_id: input_datetime.gestione_luci_notte_offset
+              data:
+                time: "{{(state_attr('input_datetime.gestione_luci_notte', 'timestamp') + 600) | timestamp_custom('%H:%M', false)}}"
 
   - alias: 'gestione_luci_set_fascia_oraria'
     id: 01FH6198R9VKMN775EADTRAZXP
@@ -1255,12 +1517,35 @@ automation:
         at: input_datetime.gestione_luci_sera
       - platform: time
         at: input_datetime.gestione_luci_notte
+      - platform: time
+        at: input_datetime.gestione_luci_giorno_offset
+      - platform: time
+        at: input_datetime.gestione_luci_crepuscolo_offset
+      - platform: time
+        at: input_datetime.gestione_luci_sera_offset
+      - platform: time
+        at: input_datetime.gestione_luci_notte_offset
     action:
       - choose:
           - alias: "se mattino"
             conditions:
               - condition: template
                 value_template: "{{states('sensor.time') == states('input_datetime.gestione_luci_giorno') [0:5] }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_periodo_giorno
+              - service: input_boolean.turn_off
+                entity_id:
+                  - input_boolean.gestione_luci_periodo_crepuscolo
+                  - input_boolean.gestione_luci_periodo_sera
+                  - input_boolean.gestione_luci_periodo_notte
+
+          - alias: "se mattino offset"
+            conditions:
+              - condition: template
+                value_template: "{{states('sensor.time') == states('input_datetime.gestione_luci_giorno_offset') [0:5] }}"
+              - condition: template
+                value_template: "{{is_state('input_boolean.gestione_luci_periodo_giorno','off') }}"
             sequence:
               - service: input_boolean.turn_on
                 entity_id: input_boolean.gestione_luci_periodo_giorno
@@ -1283,6 +1568,21 @@ automation:
                   - input_boolean.gestione_luci_periodo_sera
                   - input_boolean.gestione_luci_periodo_notte
 
+          - alias: "se crepuscolo offset"
+            conditions:
+              - condition: template
+                value_template: "{{states('sensor.time') == states('input_datetime.gestione_luci_crepuscolo_offset') [0:5] }}"
+              - condition: template
+                value_template: "{{is_state('input_boolean.gestione_luci_periodo_crepuscolo','off') }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_periodo_crepuscolo
+              - service: input_boolean.turn_off
+                entity_id:
+                  - input_boolean.gestione_luci_periodo_giorno
+                  - input_boolean.gestione_luci_periodo_sera
+                  - input_boolean.gestione_luci_periodo_notte
+
           - alias: "se sera"
             conditions:
               - condition: template
@@ -1296,10 +1596,40 @@ automation:
                   - input_boolean.gestione_luci_periodo_crepuscolo
                   - input_boolean.gestione_luci_periodo_notte
 
+          - alias: "se sera offset"
+            conditions:
+              - condition: template
+                value_template: "{{states('sensor.time') == states('input_datetime.gestione_luci_sera_offset') [0:5] }}"
+              - condition: template
+                value_template: "{{is_state('input_boolean.gestione_luci_periodo_sera','off') }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_periodo_sera
+              - service: input_boolean.turn_off
+                entity_id:
+                  - input_boolean.gestione_luci_periodo_giorno
+                  - input_boolean.gestione_luci_periodo_crepuscolo
+                  - input_boolean.gestione_luci_periodo_notte
+
           - alias: "se notte"
             conditions:
               - condition: template
                 value_template: "{{states('sensor.time') == states('input_datetime.gestione_luci_notte') [0:5] }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_periodo_notte
+              - service: input_boolean.turn_off
+                entity_id:
+                  - input_boolean.gestione_luci_periodo_giorno
+                  - input_boolean.gestione_luci_periodo_crepuscolo
+                  - input_boolean.gestione_luci_periodo_sera
+
+          - alias: "se notte offset"
+            conditions:
+              - condition: template
+                value_template: "{{states('sensor.time') == states('input_datetime.gestione_luci_notte_offset') [0:5] }}"
+              - condition: template
+                value_template: "{{is_state('input_boolean.gestione_luci_periodo_notte','off') }}"
             sequence:
               - service: input_boolean.turn_on
                 entity_id: input_boolean.gestione_luci_periodo_notte
@@ -1365,37 +1695,36 @@ automation:
         - input_boolean.gestione_luci_tutte
 
 ################################################### FINE SELETTORE GRUPPI
-
   - alias: 'gestione_luci_sync_impostazioni'
     id: 01FGFMDMV59Q1AXQ5ETBFWP9HG
     initial_state: true
     mode: single
     max_exceeded: silent
     trigger:
-    - platform: homeassistant
-      event: start
-    - platform: state
-      entity_id: sensor.gestione_luci_fascia_oraria_sync
+      - platform: homeassistant
+        event: start
+      - platform: state
+        entity_id: sensor.gestione_luci_fascia_oraria_sync
     action:
-    - service: input_select.select_option
-      data_template:
-        entity_id: input_select.gestione_luci_scena_corrente
-        option: >-
-          {% if is_state("sensor.gestione_luci_fascia_oraria_sync", "Giorno") %}
-            {{ states("input_select.gestione_luci_scena_diurna_sync") }}
+      - service: input_select.select_option
+        data_template:
+          entity_id: input_select.gestione_luci_scena_corrente
+          option: >-
+            {% if is_state("sensor.gestione_luci_fascia_oraria_sync", "Giorno") %}
+              {{ states("input_select.gestione_luci_scena_diurna_sync") }}
 
-          {% elif is_state("sensor.gestione_luci_fascia_oraria_sync", "Crepuscolo") %}
-            {{ states("input_select.gestione_luci_scena_crepuscolare_sync") }}
+            {% elif is_state("sensor.gestione_luci_fascia_oraria_sync", "Crepuscolo") %}
+              {{ states("input_select.gestione_luci_scena_crepuscolare_sync") }}
 
-          {% elif is_state("sensor.gestione_luci_fascia_oraria_sync", "Sera") %}
-            {{ states("input_select.gestione_luci_scena_serale_sync") }}
+            {% elif is_state("sensor.gestione_luci_fascia_oraria_sync", "Sera") %}
+              {{ states("input_select.gestione_luci_scena_serale_sync") }}
 
-          {% elif is_state("sensor.gestione_luci_fascia_oraria_sync", "Notte") %}
-            {{ states("input_select.gestione_luci_scena_notturna_sync") }}
+            {% elif is_state("sensor.gestione_luci_fascia_oraria_sync", "Notte") %}
+              {{ states("input_select.gestione_luci_scena_notturna_sync") }}
 
-          {% else %}
-            {{ states("input_select.gestione_luci_scena_diurna_sync") }}
-          {% endif %}
+            {% else %}
+              {{ states("input_select.gestione_luci_scena_diurna_sync") }}
+            {% endif %}
 
   - alias: 'gestione_luci_sync'
     id: 4fb51affa86ed9b1e1ed5849826896df
@@ -1519,9 +1848,128 @@ automation:
         {% elif trigger.entity_id == 'light.luce_lampada_soggiorno' %} script.gestione_luci_sync_lampada_soggiorno
         {% endif %}
 
+  - alias: 'gestione_luci_sync_int'
+    id: 1b765caf73f3d90cc4c949c96d3c95a5
+    mode: single
+    max_exceeded: silent
+    trigger:
+    - platform: state
+      entity_id: light.soggiorno_luce_piccola
+      to: 'off'
+    - platform: state
+      entity_id: light.soggiorno_luce_grande
+      to: 'off'
+    - platform: state
+      entity_id: light.luce_lampada_soggiorno
+      to: 'off'
+    - platform: state
+      entity_id: light.luce_abat_jour
+      to: 'off'
+    - platform: state
+      entity_id: light.luce_cucina
+      to: 'off'
+    - platform: state
+      entity_id: light.hue_led_cucina
+      to: 'off'
+    - platform: state
+      entity_id: light.luce_bagno
+      to: 'off'
+    - platform: state
+      entity_id: light.luce_ingresso
+      to: 'off'
+    - platform: state
+      entity_id: light.luce_corridoio
+      to: 'off'
+    - platform: state
+      entity_id: light.luce_cameretta
+      to: 'off'
+    - platform: state
+      entity_id: light.luce_camera_da_letto
+      to: 'off'
+    action:
+      - choose:
+          - conditions: # soggiorno_luce_piccola
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.soggiorno_luce_piccola' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_lampadario_soggiorno_int_sync
 
-      # {% set trigger_name = trigger.to_state.entity_id %}
-      # 🚨 Triggered by {{ trigger_name.replace('_','\_') }} {{ trigger.to_state.name }} too high for {{ trigger.entity_id }} !
+          - conditions: # soggiorno_luce_grande
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.soggiorno_luce_grande' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_lampadario_soggiorno_int_sync
+
+          - conditions: # luce_lampada_soggiorno
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.luce_lampada_soggiorno' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_lampada_soggiorno_int_sync
+
+          - conditions: # luce_abat_jour
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.luce_abat_jour' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_abat_jour_int_sync
+
+          - conditions: # luce_cucina
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.luce_cucina' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_cucina_int_sync
+
+          - conditions: # led_cucina
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.hue_led_cucina' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_led_cucina_int_sync
+
+
+          - conditions: # luce_bagno
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.luce_bagno' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_bagno_int_sync
+
+          - conditions: # luce_ingresso
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.luce_ingresso' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_ingresso_int_sync
+
+          - conditions: # luce_corridoio
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.luce_corridoio' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_corridoio_int_sync
+
+          - conditions: # luce_cameretta
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.luce_cameretta' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_cameretta_int_sync
+
+          - conditions: # luce_cameretta
+              - condition: template
+                value_template: "{{ trigger.entity_id == 'light.luce_camera_da_letto' }}"
+            sequence:
+              - service: input_boolean.turn_on
+                entity_id: input_boolean.gestione_luci_cameretta_int_sync
+
+
+
+ # {% set trigger_name = trigger.to_state.entity_id %}
+ # 🚨 Triggered by {{ trigger_name.replace('_','\_') }} {{ trigger.to_state.name }} too high for {{ trigger.entity_id }} !
 
     # - service: notify.francesco
     #   data_template:
@@ -1536,13 +1984,22 @@ automation:
       at: '03:00:00'
     action:
       - service: input_boolean.turn_on
-        entity_id: input_boolean.automazioni_luci_tutte
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.automazioni_luci_generale_sincronizzazioni
-      - service: input_boolean.turn_off
-        entity_id: input_boolean.gestione_luci_sync_manuale
-########################################
+        entity_id:
+          # - input_boolean.automazioni_luci_tutte
+          # - input_boolean.automazioni_luci_generale_sincronizzazioni
+          - input_boolean.gestione_luci_lampadario_soggiorno_int_sync
+          - input_boolean.gestione_luci_lampada_soggiorno_int_sync
+          - input_boolean.gestione_luci_cucina_int_sync
+          - input_boolean.gestione_luci_led_cucina_int_sync
+          - input_boolean.gestione_luci_bagno_int_sync
+          - input_boolean.gestione_luci_abat_jour_int_sync
+          - input_boolean.gestione_luci_ingresso_int_sync
+          - input_boolean.gestione_luci_corridoio_int_sync
+          - input_boolean.gestione_luci_studio_int_sync
+          - input_boolean.gestione_luci_cameretta_int_sync
+          - input_boolean.gestione_luci_camera_da_letto_int_sync
 
+########################################
   - alias: 'Lampada go scena notte'
     id: 4e7aa161f5bbe043f31cf88262330090
     initial_state: true
@@ -1810,7 +2267,7 @@ automation:
           device_ieee: !secret tasto_led_2
           command: 'hold'
     action:
-      - entity_id: light.led_2_cucina
+      - entity_id: light.hue_led_cucina
         service: light.turn_off
       - entity_id: light.led_1_cucina
         service: light.turn_off
@@ -1937,21 +2394,6 @@ automation:
         target:
           entity_id: light.luce_corridoio
 
-
-
-
 #################################### ALexa actionable Gestione Ospiti
 
 
-
-  - alias: gestione luci Actionable notification ospite
-    id: 1ac85ecabe9b4f2461dedfa6b1d90b63
-    trigger:
-      platform: event
-      event_type: alexa_actionable_notification
-      event_data:
-        event_id: actionable_notification_gestione_luci_ospite
-        event_response: ResponseYes
-    action:
-      - service: script.turn_on
-        entity_id: script.vacuum_start
