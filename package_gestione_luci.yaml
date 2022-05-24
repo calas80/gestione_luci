@@ -14,7 +14,7 @@ homeassistant:
 # Aggiunto Dimmerabilità dai tasti 
 # Aggiunto Selettore automatico stanza sa Alexa
 # Aggiunto Gestione transazioni per signolo punto luce
-# Aggiunto popup con
+# Aggiunto popup con gestinone luminosità e scene
 # Aggiunto gestione luce notturna corridoio
 # Aggiunto auto spegnimento luce corridoio
 # Aggiunto personalizzazione da UI durata transazione automatica luci
