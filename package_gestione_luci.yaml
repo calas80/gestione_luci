@@ -10,6 +10,8 @@ homeassistant:
 # Aggiunto sincronizzazione luci
 # Aggiunto conteggio luci
 # Aggiunto Abbassa / Alaza luci su ogni singola stanza
+# Aggiunto tasto a 6 posizioni
+# Aggiunto Dimmerabilità dai tasti 
 # Aggiunto Selettore automatico stanza sa Alexa
 # Aggiunto Gestione transazioni per signolo punto luce
 # Aggiunto popup con
